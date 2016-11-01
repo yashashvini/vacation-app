@@ -17,3 +17,11 @@ This README would normally document whatever steps are necessary to get your app
   python -m SimpleHTTPServer
 * opem browser and go to "http://localhost:8000/simple_speaking.html"
 * now start speaking and enjoy!!!
+
+### Contribution guidelines ###
+
+if you want to make any changes to this repository, follow the below instructions
+
+* Create a new branch with your name and some reasonable description eg: git checkout -b chetana_added_autospeaking_feature
+* make changes to the files in your branch and then commit those files and push those changes to your branch
+* create a pull request, so that rest of the teammates can review your changes and merge your changes to master branch.

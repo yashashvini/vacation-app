@@ -25,3 +25,5 @@ if you want to make any changes to this repository, follow the below instruction
 * Create a new branch with your name and some reasonable description eg: git checkout -b chetana_added_autospeaking_feature
 * make changes to the files in your branch and then commit those files and push those changes to your branch
 * create a pull request, so that rest of the teammates can review your changes and merge your changes to master branch.
+
+**NEVER PUSH YOUR CHANGES DIRECTLY TO MASTER**

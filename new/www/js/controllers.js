@@ -23,7 +23,7 @@ angular.module('starter.controllers', ['ionic'])
   };
  
   $scope.record = function() {
-    var recognition = new webkitSpeechRecognition();
+    var recognition = new SpeechRecognition();
     console.log("hmm");
     recognition.onresult = function(event) {
       console.log(event);

@@ -5,7 +5,7 @@ angular.module('starter.controllers', ['ionic'])
     speechText: ''
   };
   $scope.recognizedText = '';
-  var accessToken = "7853febc373644728bc5d5f9e6d0282d";
+  var accessToken = "96a5eba7687d4fb8884f595edfbb78cd";
   var subscriptionKey = "4ff074a867ab4d71a8f12eb5fd20822d";
   var baseUrl = "https://api.api.ai/v1/";
   
@@ -43,6 +43,7 @@ angular.module('starter.controllers', ['ionic'])
             }).then(function successCallback(response) {
                 console.log(response.data.result.speech);
                 $scope.recognizedText = response.data.result.speech;
+                $scope.speakText();
               }, function errorCallback(response) {
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
@@ -52,3 +53,4 @@ angular.module('starter.controllers', ['ionic'])
     recognition.start();
   };
 })
+

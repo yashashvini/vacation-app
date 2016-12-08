@@ -12,17 +12,16 @@ except ImportError:
 # CLIENT_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
 CLIENT_ACCESS_TOKEN = '7853febc373644728bc5d5f9e6d0282d'
 
-def main():
+def ma():
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
     request = ai.text_request()
     # request.lang = 'en'  # optional, default value equal 'en'
-    # request.session_id = "<SESSION ID, UNIQUE FOR EACH USER>"
+    # request.session_id = "unique"
     request.query = "i would like to have lunch"
     response = request.getresponse()
     # print json.loads(response.read())['status']['metadata']
+    print response.read()
     print json.loads(response.read())['result']['metadata']
     return response.read()
 
-
-if __name__ == '__main__':
-    main()
+ma()

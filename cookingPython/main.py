@@ -1,4 +1,6 @@
 __author__ = 'hemalatha_ganireddy'
+from flask import Flask
+app = Flask(__name__)
 import os.path
 import sys
 import json
@@ -10,18 +12,34 @@ except ImportError:
     )
     import apiai
 # CLIENT_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
-CLIENT_ACCESS_TOKEN = '7853febc373644728bc5d5f9e6d0282d'
+client_access_token = '8bd3b6024a8e461f8e4e63c181882295'
 
-def ma():
-    ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
+#@app.route("/")
+def basic():
+    ai = apiai.ApiAI(client_access_token)
     request = ai.text_request()
     # request.lang = 'en'  # optional, default value equal 'en'
     # request.session_id = "unique"
-    request.query = "i would like to have lunch"
+    request.query = "Chicken"
     response = request.getresponse()
-    # print json.loads(response.read())['status']['metadata']
-    print response.read()
-    print json.loads(response.read())['result']['metadata']
+    #print json.loads(response.read())
+    #output = json.loads(response.read())['result']["fulfillment"]["messages"][0]['speech']
+    #print json.loads(response.read())['result']['fulfillment']
+    output = json.loads(response.read())['result']
+    output_speech = output["fulfillment"]["speech"]
+    intent_name = output["metadata"]["intentName"]
+    if (output_speech.rsplit(None,1)[-1] == 'chicken:'):
+        ai = apiai.ApiAI("2014eca4faff41eaa164b46c965aaa52")
+        request = ai.text_request()
+        request.query = "yes"
+        response = request.getresponse()
+        output = json.loads(response.read())['result']
+        output_speech = output["fulfillment"]["speech"]
+        print output_speech
+        intent_name = output["metadata"]["intentName"]
+    print output_speech,intent_name
     return response.read()
 
-ma()
+if __name__ == '__main__':
+    basic()
+    #app.run()

@@ -17,48 +17,44 @@ except ImportError:
     import apiai
 
 app = Flask(__name__)
-
+os.environ["DEFAULT"] = "8bd3b6024a8e461f8e4e63c181882295"
+os.environ["CHICKEN"] = "3e46239a1f334a378ee7a212f590010f"
+os.environ["BREAD"] = "1b47e65f9fee42d0be30b00a42673ddf"
+os.environ["SESSION"] = "0"
+os.environ["COUNTER"] = "0"
 @app.route('/favicon.ico')
 def sam():
     return True
 
-
-def basic(user_input):
-    f = open('clienttoken', 'r+')
-    r = open('logfile','a')
-    client_access_token = f.read()
-    ui = '"hello"'
-    user_input = (str(user_input))
-    if str(user_input) == ui:
-        client_access_token = "8bd3b6024a8e461f8e4e63c181882295"
-        f.seek(0,0)
-        f.write(client_access_token)
+def call_ai(client_access_token,user_input):
     ai = apiai.ApiAI(client_access_token)
     request = ai.text_request()
-    # request.lang = 'en'  # optional, default value equal 'en'
-    # request.session_id = "unique"
     request.query = user_input
-    r.write("User:"+user_input+"\n")
     response = request.getresponse()
     output = json.loads(response.read())['result']
     output_speech = output["fulfillment"]["speech"]
-    r.write("System:"+output_speech+"\n")
-    print output_speech
     intent_name = output["metadata"]["intentName"]
-    if "chicken" in output_speech:
-        client_access_token = "3e46239a1f334a378ee7a212f590010f"
-        f.seek(0,0)
-        a = f.tell()
-        print a
-        f.write(client_access_token)
-    elif "bread" in output_speech:
-        client_access_token = "1b47e65f9fee42d0be30b00a42673ddf"
-        f.seek(0, 0)
-        f.write(client_access_token)
-    f.close()
-    print output_speech
-    return output_speech
+    return [output_speech,intent_name]
 
+def basic(user_input):
+    [output_speech,intent_name] = call_ai(os.environ["DEFAULT"],user_input)
+    if "chicken" in output_speech:
+        os.environ["SESSION"] = "1"
+        os.environ["COUNTER"] = "0"
+    elif "bread" in output_speech:
+        os.environ["SESSION"] = "2"
+        os.environ["COUNTER"] = "0"
+    if intent_name == "NextSteps":
+        step_no = int(os.environ["COUNTER"]) + 1
+        os.environ["COUNTER"] = str(step_no)
+        if (os.environ["SESSION"] == "1"):
+            client_access_token = os.environ["CHICKEN"]
+        elif (os.environ["SESSION"] == "2"):
+            client_access_token = os.environ["BREAD"]
+        user_input = "Step "+str(step_no)
+        [output_speech,intent_name] = call_ai(client_access_token,user_input)
+        return output_speech
+    return output_speech
 
 @app.route('/',methods = ['POST'])
 def index():

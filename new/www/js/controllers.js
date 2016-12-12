@@ -1,36 +1,49 @@
 angular.module('starter.controllers', ['ionic'])
 
-.controller('DashCtrl', function($scope,$http) {
+.controller('DashCtrl', function($scope,$http,$ionicModal) {
   $scope.data = {
     speechText: ''
   };
   $scope.recognizedText = [];
   var accessToken = "8bd3b6024a8e461f8e4e63c181882295";
-  var baseUrl = "http://127.0.0.1:5000/";
+  var baseUrl = "https://cookingasst.herokuapp.com/";
   
+  $ionicModal.fromTemplateUrl('my-modal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+   }).then(function(modal) {
+      $scope.modal = modal;
+   });
 
   $scope.speakText = function() {
-    alert("speaking");
     window.TTS.speak({
-           text: $scope.recognizedText[0],
+           text: $scope.recognizedText[0].text,
            locale: 'en-GB',
            rate: 1.5
        }, function (success) {
             $scope.record();
            // Do Something after success
        }, function (reason) {
-          alert('some error occurred, speak again');
+          //alert('some error occurred, speak again');
           $scope.record();
           // Handle the error case
        });
   };
 
   $scope.record = function() {
-    var recognition = new webkitSpeechRecognition();
-    alert('calling record');
+    var recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    //recognition.interimResults = true;
+    console.log('calling record');
     recognition.onresult = function(event) {
+      console.log("result");
       if (event.results.length > 0) {
-        $scope.recognizedText.unshift(event.results[0][0].transcript);
+        var displayObjClient = {
+          text : '',
+          origin : 'client'
+        };
+        displayObjClient.text = event.results[0][0].transcript;
+        $scope.recognizedText.unshift(displayObjClient);
         $scope.$apply();
         $http({
           method: "POST",
@@ -40,18 +53,29 @@ angular.module('starter.controllers', ['ionic'])
           headers: {
             "Authorization": "Bearer " + accessToken
           },
-          data: JSON.stringify({ query: $scope.recognizedText[0], lang: "en", sessionId: "somerandomthing" }),
+          data: JSON.stringify({ query: $scope.recognizedText[0].text, lang: "en", sessionId: "somerandomthing" }),
         }).then(function successCallback(response) {
-            $scope.recognizedText.unshift(response.data.result.speech);
-            alert('speaking');
+          var displayObjServer = {
+            text : '',
+            origin : 'server'
+          };
+          displayObjServer.text = response.data;
+          $scope.recognizedText.unshift(displayObjServer);
             $scope.speakText();
           }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.
-            alert('unkown error occurred, speak again');
+            //alert('unkown error occurred, speak again');
             $scope.record();
         });
       }
+    };
+    recognition.onstart = function(event){
+      //$scope.modal.show();
+    };
+
+    recognition.onend = function(event){
+      //$scope.modal.hide();
     };
     recognition.start();
   };

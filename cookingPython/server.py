@@ -27,13 +27,16 @@ def sam():
     return True
 
 def call_ai(client_access_token,user_input):
-    ai = apiai.ApiAI(client_access_token)
-    request = ai.text_request()
-    request.query = user_input
-    response = request.getresponse()
-    output = json.loads(response.read())['result']
-    output_speech = output["fulfillment"]["speech"]
-    intent_name = output["metadata"]["intentName"]
+    try:
+        ai = apiai.ApiAI(client_access_token)
+        request = ai.text_request()
+        request.query = user_input
+        response = request.getresponse()
+        output = json.loads(response.read())['result']
+        output_speech = output["fulfillment"]["speech"]
+        intent_name = output["metadata"]["intentName"]
+    except (RuntimeError,TypeError,NameError):
+        pass
     return [output_speech,intent_name]
 
 def basic(user_input):

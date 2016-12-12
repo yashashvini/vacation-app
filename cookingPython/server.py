@@ -51,6 +51,7 @@ def basic(user_input):
     if intent_name == "NextSteps":
         step_no = int(COUNTER) + 1
         COUNTER = str(step_no)
+        print "session: " + SESSION
         if (SESSION == "1"):
             client_access_token = CHICKEN
         elif (SESSION == "2"):
@@ -62,7 +63,7 @@ def basic(user_input):
 
 @app.route('/',methods = ['POST'])
 def index():
-    data = request.form['data']
+    data = request.data
     print data
     output_speech = basic(data)
     return output_speech

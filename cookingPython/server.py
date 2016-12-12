@@ -17,11 +17,11 @@ except ImportError:
     import apiai
 
 app = Flask(__name__)
-os.environ["DEFAULT"] = "8bd3b6024a8e461f8e4e63c181882295"
-os.environ["CHICKEN"] = "3e46239a1f334a378ee7a212f590010f"
-os.environ["BREAD"] = "1b47e65f9fee42d0be30b00a42673ddf"
-os.environ["SESSION"] = "0"
-os.environ["COUNTER"] = "0"
+DEFAULT = "8bd3b6024a8e461f8e4e63c181882295"
+CHICKEN = "3e46239a1f334a378ee7a212f590010f"
+BREAD = "1b47e65f9fee42d0be30b00a42673ddf"
+SESSION = "0"
+COUNTER = "0"
 @app.route('/favicon.ico')
 def sam():
     return True
@@ -40,20 +40,21 @@ def call_ai(client_access_token,user_input):
     return [output_speech,intent_name]
 
 def basic(user_input):
-    [output_speech,intent_name] = call_ai(os.environ["DEFAULT"],user_input)
+    global DEFAULT, CHICKEN, BREAD, SESSION, COUNTER
+    [output_speech,intent_name] = call_ai(DEFAULT,user_input)
     if "chicken" in output_speech:
-        os.environ["SESSION"] = "1"
-        os.environ["COUNTER"] = "0"
+        SESSION = "1"
+        COUNTER = "0"
     elif "bread" in output_speech:
-        os.environ["SESSION"] = "2"
-        os.environ["COUNTER"] = "0"
+        SESSION = "2"
+        COUNTER = "0"
     if intent_name == "NextSteps":
-        step_no = int(os.environ["COUNTER"]) + 1
-        os.environ["COUNTER"] = str(step_no)
-        if (os.environ["SESSION"] == "1"):
-            client_access_token = os.environ["CHICKEN"]
-        elif (os.environ["SESSION"] == "2"):
-            client_access_token = os.environ["BREAD"]
+        step_no = int(COUNTER) + 1
+        COUNTER = str(step_no)
+        if (SESSION == "1"):
+            client_access_token = CHICKEN
+        elif (SESSION == "2"):
+            client_access_token = BREAD
         user_input = "Step "+str(step_no)
         [output_speech,intent_name] = call_ai(client_access_token,user_input)
         return output_speech

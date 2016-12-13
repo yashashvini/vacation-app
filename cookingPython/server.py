@@ -79,7 +79,7 @@ def basic(user_input):
             output_speech = "Okay! Let's start cooking banana pudding.Say \"ready\" when you are ready to start cooking."
             SESSION = 3
             COUNTER = 0
-        elif (("egg" in output_speech) or ("fried" in output_speech) or ("rice" in output_speech)) and (user_input[1:-1] == "egg fried rice"):
+        elif (("egg" in output_speech) or ("fried" in output_speech) or ("rice" in output_speech)) and (user_input == "egg fried rice"):
             output_speech = "Okay! Let's start cooking egg fried rice.Say \"ready\" when you are ready to start cooking."
             SESSION = 4
             COUNTER = 0

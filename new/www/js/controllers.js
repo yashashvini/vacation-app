@@ -32,7 +32,7 @@ angular.module('starter.controllers', ['ionic'])
 
   $scope.record = function() {
     var recognition = new SpeechRecognition();
-    recognition.continuous = true;
+    //recognition.continuous = true;
     //recognition.interimResults = true;
     console.log('calling record');
     recognition.onresult = function(event) {

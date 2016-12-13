@@ -67,15 +67,15 @@ def basic(user_input):
         SESSION = 0
         COUNTER = 0
     if "Okay,let's start cooking" in output_speech:
-        if (("chicken" in output_speech) or ("sandwich" in output_speech))and (user_input[1:-1] == "chicken sandwich"):
+        if (("chicken" in output_speech) or ("sandwich" in output_speech))and (user_input == "chicken sandwich"):
             output_speech = "Okay! Let's start cooking chicken sandwich.Say \"ready\" when you are ready to start cooking."
             SESSION = 1
             COUNTER = 0
-        elif (("bread" in output_speech) or ("toast" in output_speech)) and (user_input[1:-1] == "bread toast"):
+        elif (("bread" in output_speech) or ("toast" in output_speech)) and (user_input == "bread toast"):
             output_speech = "Okay! Let's start cooking bread toast.Say \"ready\" when you are ready to start cooking."
             SESSION = 2
             COUNTER = 0
-        elif (("banana" in output_speech) or ("pudding" in output_speech)) and (user_input[1:-1] == "banana pudding"):
+        elif (("banana" in output_speech) or ("pudding" in output_speech)) and (user_input == "banana pudding"):
             output_speech = "Okay! Let's start cooking banana pudding.Say \"ready\" when you are ready to start cooking."
             SESSION = 3
             COUNTER = 0
@@ -83,16 +83,16 @@ def basic(user_input):
             output_speech = "Okay! Let's start cooking egg fried rice.Say \"ready\" when you are ready to start cooking."
             SESSION = 4
             COUNTER = 0
-        elif (("grilled" in output_speech) or ("salmon" in output_speech)) and (user_input[1:-1] == "grilled salmon"):
+        elif (("grilled" in output_speech) or ("salmon" in output_speech)) and (user_input == "grilled salmon"):
             output_speech = "Okay! Let's start cooking grilled salmon.Say \"ready\" when you are ready to start cooking."
             SESSION = 5
             COUNTER = 0
-        elif (("strawberry" in output_speech) or ("pie" in output_speech)) and (user_input[1:-1] == "strawberry pie"):
+        elif (("strawberry" in output_speech) or ("pie" in output_speech)) and (user_input == "strawberry pie"):
             output_speech = "Okay! Let's start cooking strawberry pie.Say \"ready\" when you are ready to start cooking."
             SESSION = 6
             COUNTER = 0
         else:
-            output_speech = "Sorry! We don't have "+user_input[1:-1]+" recipe available."
+            output_speech = "Sorry! We don't have "+user_input+" recipe available."
     #if ((intent_name == "SelectRecipe") and SESSION!=0):
         #intent_name = "Default Fallback Intent"
     if (intent_name == 'Default Fallback Intent') and (SESSION!=0) and (COUNTER!=0):

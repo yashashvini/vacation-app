@@ -43,7 +43,8 @@ def call_ai(client_access_token,user_input):
         ai = apiai.ApiAI(client_access_token)
         request = ai.text_request()
         request.query = user_input
-        request.resetContexts = True
+        request.session_id = '1'
+        request.resetContexts = False
         response = request.getresponse()
         output = json.loads(response.read())['result']
         print output
@@ -66,44 +67,48 @@ def basic(user_input):
         SESSION = 0
         COUNTER = 0
     if "Okay,let's start cooking" in output_speech:
-        if ("chicken" in output_speech) or ("sandwich" in output_speech):
-            output_speech = "Okay! Let's start cooking chicken sandwich.Say ready when you are ready to start cooking."
+        if (("chicken" in output_speech) or ("sandwich" in output_speech))and (user_input[1:-1] == "chicken sandwich"):
+            output_speech = "Okay! Let's start cooking chicken sandwich.Say \"ready\" when you are ready to start cooking."
             SESSION = 1
             COUNTER = 0
-        elif ("bread" in output_speech) or ("toast" in output_speech):
-            output_speech = "Okay! Let's start cooking bread toast.Say ready when you are ready to start cooking."
+        elif (("bread" in output_speech) or ("toast" in output_speech)) and (user_input[1:-1] == "bread toast"):
+            output_speech = "Okay! Let's start cooking bread toast.Say \"ready\" when you are ready to start cooking."
             SESSION = 2
             COUNTER = 0
-        elif ("banana" in output_speech) or ("pudding" in output_speech):
-            output_speech = "Okay! Let's start cooking banana pudding.Say ready when you are ready to start cooking."
+        elif (("banana" in output_speech) or ("pudding" in output_speech)) and (user_input[1:-1] == "banana pudding"):
+            output_speech = "Okay! Let's start cooking banana pudding.Say \"ready\" when you are ready to start cooking."
             SESSION = 3
             COUNTER = 0
-        elif ("egg" in output_speech) or ("fried" in output_speech) or ("rice" in output_speech):
-            output_speech = "Okay! Let's start cooking egg fried rice.Say ready when you are ready to start cooking."
+        elif (("egg" in output_speech) or ("fried" in output_speech) or ("rice" in output_speech)) and (user_input[1:-1] == "egg fried rice"):
+            output_speech = "Okay! Let's start cooking egg fried rice.Say \"ready\" when you are ready to start cooking."
             SESSION = 4
             COUNTER = 0
-        elif ("grilled" in output_speech) or ("salmon" in output_speech):
-            output_speech = "Okay! Let's start cooking grilled salmon.Say ready when you are ready to start cooking."
+        elif (("grilled" in output_speech) or ("salmon" in output_speech)) and (user_input[1:-1] == "grilled salmon"):
+            output_speech = "Okay! Let's start cooking grilled salmon.Say \"ready\" when you are ready to start cooking."
             SESSION = 5
             COUNTER = 0
-        elif ("strawberry" in output_speech) or ("pie" in output_speech):
-            output_speech = "Okay! Let's start cooking strawberry pie.Say ready when you are ready to start cooking."
+        elif (("strawberry" in output_speech) or ("pie" in output_speech)) and (user_input[1:-1] == "strawberry pie"):
+            output_speech = "Okay! Let's start cooking strawberry pie.Say \"ready\" when you are ready to start cooking."
             SESSION = 6
             COUNTER = 0
+        else:
+            output_speech = "Sorry! We don't have "+user_input[1:-1]+" recipe available."
+    #if ((intent_name == "SelectRecipe") and SESSION!=0):
+        #intent_name = "Default Fallback Intent"
     if (intent_name == 'Default Fallback Intent') and (SESSION!=0) and (COUNTER!=0):
-        output_speech = "Sorry I didn't understand what you are trying to say!Please say repeat to repeat the current recipe" \
-                        " or next for the next step or previous for the previous step or exit to return to menu"
+        output_speech = "Sorry I didn't understand what you are trying to say!Please say \"repeat\" to repeat the current recipe" \
+                        " or \"next\" for the next step or \"previous\" for the previous step or \"exit\" to return to menu"
         log.info("System:" + output_speech)
         return output_speech
     if (intent_name == "Default Fallback Intent") and (SESSION!=0) and (COUNTER==0):
-        output_speech = "Sorry I didn't understand what you were trying to say.Please say ready if you are ready to start" \
+        output_speech = "Sorry I didn't understand what you were trying to say.Please say \"ready\" if you are ready to start" \
                         " cooking."
         log.info("System:" + output_speech)
         return output_speech
-    if (intent_name == 'Somethingelse-no') and (SESSION!=0):
-        output_speech = "Ok.Would you like to cook something?"
-        log.info("System:" + output_speech)
-        return output_speech
+    #if (intent_name == 'Somethingelse-no') and (SESSION!=0):
+        #output_speech = "Ok.Would you like to cook something?"
+        #log.info("System:" + output_speech)
+        #return output_speech
 
     if (intent_name == "NextSteps") and (SESSION!=0):
         step_no = COUNTER + 1

@@ -1,29 +1,29 @@
-
 <ion-view view-title="Welcome to Cooking Assistant">
   <ion-content class="padding" style="background-image: url(../img/blur.jpg)">
           <div class="row">
               <div class="col col-50">
                 <a class="item item-avatar" href="#">
                   <img src="img/burger.jpg">
-                  <h2>Chicken Sandwich</h2>
+                  <h2>Chicken</h2>
+                  <p>Sandwich</p>
                 </a>
               </div>
               <div class="col col-50">
               <a class="item item-avatar" href="#">
                   <img src="img/bread.jpg">
-                  <h2>Bread Toast</h2>
+                  <h2>Bread</h2>
+                  <p>Toast</p>
                 </a>
-              </div>
-              
+              </div>              
           </div>
           <div class="row">
               <div class="col">Grilled Salmon</div>
               <div class="col">Strawberry Pie</div>
-              <div class="col">Bread toast</div>
+              <div class="col">Egg Fried rice</div>
               <div class="col">Banana Pudding</div>
             </div>
         <button class="button button-full button-positive" ng-click="record()">
-          Tap here and say Hello
+          {{text}}
         </button>
         <div class="container">
           <div ng-repeat="item in recognizedText" class="card">

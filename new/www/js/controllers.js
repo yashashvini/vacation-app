@@ -7,6 +7,7 @@ angular.module('starter.controllers', ['ionic'])
   $scope.recognizedText = [];
   var accessToken = "8bd3b6024a8e461f8e4e63c181882295";
   var baseUrl = "https://cookingasst.herokuapp.com/";
+  $scope.text = "Tap here and say Hello";
   
   $ionicModal.fromTemplateUrl('my-modal.html', {
       scope: $scope,
@@ -21,16 +22,16 @@ angular.module('starter.controllers', ['ionic'])
            locale: 'en-GB',
            rate: 1.5
        }, function (success) {
-            $scope.record();
+            //$scope.record();
            // Do Something after success
        }, function (reason) {
           //alert('some error occurred, speak again');
-          $scope.record();
+          //$scope.record();
           // Handle the error case
        });
   };
 
-  $scope.record = function() {
+  $scope.record = function(signal) {
     var recognition = new SpeechRecognition();
     //recognition.continuous = true;
     //recognition.interimResults = true;
@@ -40,7 +41,7 @@ angular.module('starter.controllers', ['ionic'])
       if (event.results.length > 0) {
         var displayObjClient = {
           text : '',
-          origin : 'client'
+          origin : 'user'
         };
         displayObjClient.text = event.results[0][0].transcript;
         $scope.recognizedText.unshift(displayObjClient);
@@ -53,11 +54,11 @@ angular.module('starter.controllers', ['ionic'])
           headers: {
             "Authorization": "Bearer " + accessToken
           },
-          data: JSON.stringify({ query: $scope.recognizedText[0].text, lang: "en", sessionId: "somerandomthing" }),
+          data: $scope.recognizedText[0].text
         }).then(function successCallback(response) {
           var displayObjServer = {
             text : '',
-            origin : 'server'
+            origin : 'system'
           };
           displayObjServer.text = response.data;
           $scope.recognizedText.unshift(displayObjServer);
@@ -71,11 +72,13 @@ angular.module('starter.controllers', ['ionic'])
       }
     };
     recognition.onstart = function(event){
-      //$scope.modal.show();
+      $scope.text = "Listening";
+      $scope.$apply();
     };
 
     recognition.onend = function(event){
-      //$scope.modal.hide();
+      $scope.text = "Tap here to speak";
+      $scope.$apply();
     };
     recognition.start();
   };

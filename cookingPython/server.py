@@ -47,12 +47,19 @@ def call_ai(client_access_token,user_input):
         request.resetContexts = False
         response = request.getresponse()
         output = json.loads(response.read())['result']
-        print output
+        print output["contexts"]
+        if output["contexts"]:
+            for i in output["contexts"]:
+                if i["name"] == "survey":
+                    context = 1
+        else:
+            context = 0
+        print context
         output_speech = output["fulfillment"]["speech"]
         intent_name = output["metadata"]["intentName"]
     except (RuntimeError,TypeError,NameError):
         pass
-    return [output_speech,intent_name]
+    return [output_speech,intent_name,context]
 
 def get_client_access_token(session):
     client_access_token = tokens[session][1]
@@ -62,39 +69,42 @@ def basic(user_input):
 
     log.info("User:"+user_input)
     global tokens, SESSION, COUNTER,SET
-    [output_speech,intent_name] = call_ai(tokens[0][1],user_input)
+    [output_speech,intent_name,context] = call_ai(tokens[0][1],user_input)
     if intent_name == "Greetings":
         SESSION = 0
         COUNTER = 0
+        context = 0
     if "Okay,let's start cooking" in output_speech:
-        if (("chicken" in output_speech) or ("sandwich" in output_speech))and (user_input == "chicken sandwich"):
+        if (("chicken" in output_speech) or ("sandwich" in output_speech))and ("chicken sandwich" in user_input):
             output_speech = "Okay! Let's start cooking chicken sandwich.Say \"ready\" when you are ready to start cooking."
             SESSION = 1
             COUNTER = 0
-        elif (("bread" in output_speech) or ("toast" in output_speech)) and (user_input == "bread toast"):
+        elif (("bread" in output_speech) or ("toast" in output_speech)) and ("bread toast" in user_input):
             output_speech = "Okay! Let's start cooking bread toast.Say \"ready\" when you are ready to start cooking."
             SESSION = 2
             COUNTER = 0
-        elif (("banana" in output_speech) or ("pudding" in output_speech)) and (user_input == "banana pudding"):
+        elif (("banana" in output_speech) or ("pudding" in output_speech)) and ("banana pudding" in user_input):
             output_speech = "Okay! Let's start cooking banana pudding.Say \"ready\" when you are ready to start cooking."
             SESSION = 3
             COUNTER = 0
-        elif (("egg" in output_speech) or ("fried" in output_speech) or ("rice" in output_speech)) and (user_input == "egg fried rice"):
+        elif (("egg" in output_speech) or ("fried" in output_speech) or ("rice" in output_speech)) and ("egg fried rice" in user_input):
             output_speech = "Okay! Let's start cooking egg fried rice.Say \"ready\" when you are ready to start cooking."
             SESSION = 4
             COUNTER = 0
-        elif (("grilled" in output_speech) or ("salmon" in output_speech)) and (user_input == "grilled salmon"):
+        elif (("grilled" in output_speech) or ("salmon" in output_speech)) and ("grilled salmon" in user_input):
             output_speech = "Okay! Let's start cooking grilled salmon.Say \"ready\" when you are ready to start cooking."
             SESSION = 5
             COUNTER = 0
-        elif (("strawberry" in output_speech) or ("pie" in output_speech)) and (user_input == "strawberry pie"):
+        elif (("strawberry" in output_speech) or ("pie" in output_speech)) and ("strawberry pie" in user_input):
             output_speech = "Okay! Let's start cooking strawberry pie.Say \"ready\" when you are ready to start cooking."
             SESSION = 6
             COUNTER = 0
         else:
-            output_speech = "Sorry! We don't have "+user_input+" recipe available."
+            output_speech = "Sorry! We don't have "+user_input+" recipe available.Please say any recipe name from the menu"
     #if ((intent_name == "SelectRecipe") and SESSION!=0):
         #intent_name = "Default Fallback Intent"
+    if (intent_name == 'Default Fallback Intent') and (context == 1):
+        output_speech = "Sorry! I didn't understand you.How would you like to rate me on a scale of 1 to 5, 1 for poor and 5 for excellent?"
     if (intent_name == 'Default Fallback Intent') and (SESSION!=0) and (COUNTER!=0):
         output_speech = "Sorry I didn't understand what you are trying to say!Please say \"repeat\" to repeat the current recipe" \
                         " or \"next\" for the next step or \"previous\" for the previous step or \"exit\" to return to menu"
@@ -105,17 +115,17 @@ def basic(user_input):
                         " cooking."
         log.info("System:" + output_speech)
         return output_speech
-    #if (intent_name == 'Somethingelse-no') and (SESSION!=0):
-        #output_speech = "Ok.Would you like to cook something?"
-        #log.info("System:" + output_speech)
-        #return output_speech
+    if (intent_name == 'Somethingelse-no') and (SESSION!=0) and (context!=1):
+        output_speech = "Ok.Would you like to cook something?"
+        log.info("System:" + output_speech)
+        return output_speech
 
     if (intent_name == "NextSteps") and (SESSION!=0):
         step_no = COUNTER + 1
         COUNTER = step_no
         client_access_token = get_client_access_token(SESSION)
         user_input = "step"+str(step_no)
-        [output_speech,intent_name] = call_ai(client_access_token,user_input)
+        [output_speech,intent_name,context] = call_ai(client_access_token,user_input)
         if intent_name == 'Default':
             SESSION = 0
             COUNTER = 0
@@ -129,14 +139,14 @@ def basic(user_input):
             step_no = COUNTER
         client_access_token = get_client_access_token(SESSION)
         user_input = "step" + str(step_no)
-        [output_speech, intent_name] = call_ai(client_access_token, user_input)
+        [output_speech, intent_name,context] = call_ai(client_access_token, user_input)
         log.info("System:" + output_speech)
         return output_speech
     elif (intent_name == "Repeat") and (SESSION!=0):
         step_no = COUNTER
         client_access_token = get_client_access_token(SESSION)
         user_input = "step" + str(step_no)
-        [output_speech, intent_name] = call_ai(client_access_token, user_input)
+        [output_speech, intent_name,context] = call_ai(client_access_token, user_input)
         log.info("System:" + output_speech)
         return output_speech
     log.info("System:"+output_speech)

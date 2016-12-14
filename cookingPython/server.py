@@ -16,13 +16,13 @@ except ImportError:
     )
     import apiai
 
-"""from logentries import LogentriesHandler
+from logentries import LogentriesHandler
 import logging
 
 log = logging.getLogger('logentries')
 log.setLevel(logging.INFO)
 
-log.addHandler(LogentriesHandler('5e945364-8249-4815-85cf-0933d4a2b093'))"""
+log.addHandler(LogentriesHandler('5e945364-8249-4815-85cf-0933d4a2b093'))
 
 app = Flask(__name__)
 tokens = [
@@ -71,7 +71,7 @@ def get_client_access_token(session):
 
 def basic(user_input):
 
-    #log.info("User:"+user_input)
+    log.info("User:"+user_input)
     global tokens, SESSION, COUNTER,SET
     [output_speech,intent_name,context] = call_ai(tokens[0][1],user_input,False)
     if intent_name == "Greetings":
@@ -109,22 +109,24 @@ def basic(user_input):
     #if ((intent_name == "SelectRecipe") and SESSION!=0):
         #intent_name = "Default Fallback Intent"
     if (intent_name == 'Default Fallback Intent') and (context == 1):
+        SESSION = 0
+        COUNTER = 0
         output_speech = "Sorry! I didn't understand you.How would you like to rate me:excellent,good,fair,poor?"
-        #log.info("System:" + output_speech)
+        log.info("System:" + output_speech)
         return output_speech
     if (intent_name == 'Default Fallback Intent') and (SESSION!=0) and (COUNTER!=0):
         output_speech = "Sorry I didn't understand what you are trying to say!Please say \"repeat\" to repeat the current step" \
                         " or \"next\" for the next step or \"previous\" for the previous step or \"exit\" to return to menu"
-        #log.info("System:" + output_speech)
+        log.info("System:" + output_speech)
         return output_speech
     if (intent_name == "Default Fallback Intent") and (SESSION!=0) and (COUNTER==0):
         output_speech = "Sorry I didn't understand what you were trying to say.Please say \"start\" if you are ready to start" \
                         " cooking."
-        #log.info("System:" + output_speech)
+        log.info("System:" + output_speech)
         return output_speech
     if (intent_name == 'Somethingelse-no') and (SESSION!=0) and (context!=1):
         output_speech = "Ok.Would you like to cook something?"
-        #log.info("System:" + output_speech)
+        log.info("System:" + output_speech)
         return output_speech
 
     if (intent_name == "NextSteps") and (SESSION!=0):
@@ -136,7 +138,7 @@ def basic(user_input):
         if intent_name == 'Default':
             SESSION = 0
             COUNTER = 0
-        #log.info("System:"+output_speech)
+        log.info("System:"+output_speech)
         return output_speech
     elif (intent_name == "PreviousSteps") and (SESSION!=0):
         if (COUNTER > 1):
@@ -147,21 +149,21 @@ def basic(user_input):
         client_access_token = get_client_access_token(SESSION)
         user_input = "step" + str(step_no)
         [output_speech, intent_name,context] = call_ai(client_access_token, user_input,False)
-        #log.info("System:" + output_speech)
+        log.info("System:" + output_speech)
         return output_speech
     elif (intent_name == "Repeat") and (SESSION!=0):
         step_no = COUNTER
         client_access_token = get_client_access_token(SESSION)
         user_input = "step" + str(step_no)
         [output_speech, intent_name,context] = call_ai(client_access_token, user_input,False)
-        #log.info("System:" + output_speech)
+        log.info("System:" + output_speech)
         return output_speech
-    #log.info("System:"+output_speech)
+    log.info("System:"+output_speech)
     return output_speech
 
 @app.route('/',methods = ['POST'])
 def index():
-    data = request.form["data"]
+    data = request.data
     print data
     output_speech = basic(data)
     return output_speech

@@ -38,13 +38,13 @@ SESSION = 0
 COUNTER = 0
 SET = 0
 
-def call_ai(client_access_token,user_input):
+def call_ai(client_access_token,user_input,set):
     try:
         ai = apiai.ApiAI(client_access_token)
         request = ai.text_request()
         request.query = user_input
         request.session_id = '1'
-        request.resetContexts = False
+        request.resetContexts = set
         response = request.getresponse()
         output = json.loads(response.read())['result']
         output_speech = ""
@@ -56,6 +56,7 @@ def call_ai(client_access_token,user_input):
             for i in output["contexts"]:
                 if i["name"] == "survey":
                     context = 1
+                    SESSION = 0
         else:
             context = 0
         print context
@@ -69,10 +70,11 @@ def get_client_access_token(session):
 
 def basic(user_input):
 
-    #log.info("User:"+user_input)
+    log.info("User:"+user_input)
     global tokens, SESSION, COUNTER,SET
-    [output_speech,intent_name,context] = call_ai(tokens[0][1],user_input)
+    [output_speech,intent_name,context] = call_ai(tokens[0][1],user_input,False)
     if intent_name == "Greetings":
+        [output_speech,intent_name,context] = call_ai(tokens[0][1],user_input,True)
         SESSION = 0
         COUNTER = 0
         context = 0
@@ -127,7 +129,7 @@ def basic(user_input):
         COUNTER = step_no
         client_access_token = get_client_access_token(SESSION)
         user_input = "step"+str(step_no)
-        [output_speech,intent_name,context] = call_ai(client_access_token,user_input)
+        [output_speech,intent_name,context] = call_ai(client_access_token,user_input,False)
         if intent_name == 'Default':
             SESSION = 0
             COUNTER = 0
@@ -141,14 +143,14 @@ def basic(user_input):
             step_no = COUNTER
         client_access_token = get_client_access_token(SESSION)
         user_input = "step" + str(step_no)
-        [output_speech, intent_name,context] = call_ai(client_access_token, user_input)
+        [output_speech, intent_name,context] = call_ai(client_access_token, user_input,False)
         log.info("System:" + output_speech)
         return output_speech
     elif (intent_name == "Repeat") and (SESSION!=0):
         step_no = COUNTER
         client_access_token = get_client_access_token(SESSION)
         user_input = "step" + str(step_no)
-        [output_speech, intent_name,context] = call_ai(client_access_token, user_input)
+        [output_speech, intent_name,context] = call_ai(client_access_token, user_input,False)
         log.info("System:" + output_speech)
         return output_speech
     log.info("System:"+output_speech)

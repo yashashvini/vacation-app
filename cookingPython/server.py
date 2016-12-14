@@ -115,8 +115,8 @@ def basic(user_input):
         log.info("System:" + output_speech)
         return output_speech
     if (intent_name == 'Default Fallback Intent') and (SESSION!=0) and (COUNTER!=0):
-        output_speech = "Sorry I didn't understand what you are trying to say!Please say \"repeat\" to repeat the current step" \
-                        " or \"next\" for the next step or \"previous\" for the previous step or \"exit\" to return to menu"
+        output_speech = "Sorry I didn't understand what you are trying to say!Use \"next\" and \"repeat\" to navigate and " \
+                        "\"exit\" to return to menu"
         log.info("System:" + output_speech)
         return output_speech
     if (intent_name == "Default Fallback Intent") and (SESSION!=0) and (COUNTER==0):

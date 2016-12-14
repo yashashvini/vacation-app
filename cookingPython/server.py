@@ -47,7 +47,11 @@ def call_ai(client_access_token,user_input):
         request.resetContexts = False
         response = request.getresponse()
         output = json.loads(response.read())['result']
-        print output["contexts"]
+        output_speech = ""
+        intent_name = ""
+        context = 0
+        output_speech = output["fulfillment"]["speech"]
+        intent_name = output["metadata"]["intentName"]
         if output["contexts"]:
             for i in output["contexts"]:
                 if i["name"] == "survey":
@@ -55,8 +59,6 @@ def call_ai(client_access_token,user_input):
         else:
             context = 0
         print context
-        output_speech = output["fulfillment"]["speech"]
-        intent_name = output["metadata"]["intentName"]
     except (RuntimeError,TypeError,NameError):
         pass
     return [output_speech,intent_name,context]
@@ -67,7 +69,7 @@ def get_client_access_token(session):
 
 def basic(user_input):
 
-    log.info("User:"+user_input)
+    #log.info("User:"+user_input)
     global tokens, SESSION, COUNTER,SET
     [output_speech,intent_name,context] = call_ai(tokens[0][1],user_input)
     if intent_name == "Greetings":
@@ -76,31 +78,31 @@ def basic(user_input):
         context = 0
     if "Okay,let's start cooking" in output_speech:
         if (("chicken" in output_speech) or ("sandwich" in output_speech))and ("chicken sandwich" in user_input):
-            output_speech = "Okay! Let's start cooking chicken sandwich.Say \"ready\" when you are ready to start cooking."
+            output_speech = "Okay! Let's start cooking chicken sandwich.Say \"start\" when you are ready to start cooking."
             SESSION = 1
             COUNTER = 0
         elif (("bread" in output_speech) or ("toast" in output_speech)) and ("bread toast" in user_input):
-            output_speech = "Okay! Let's start cooking bread toast.Say \"ready\" when you are ready to start cooking."
+            output_speech = "Okay! Let's start cooking bread toast.Say \"start\" when you are ready to start cooking."
             SESSION = 2
             COUNTER = 0
         elif (("banana" in output_speech) or ("pudding" in output_speech)) and ("banana pudding" in user_input):
-            output_speech = "Okay! Let's start cooking banana pudding.Say \"ready\" when you are ready to start cooking."
+            output_speech = "Okay! Let's start cooking banana pudding.Say \"start\" when you are ready to start cooking."
             SESSION = 3
             COUNTER = 0
         elif (("egg" in output_speech) or ("fried" in output_speech) or ("rice" in output_speech)) and ("egg fried rice" in user_input):
-            output_speech = "Okay! Let's start cooking egg fried rice.Say \"ready\" when you are ready to start cooking."
+            output_speech = "Okay! Let's start cooking egg fried rice.Say \"start\" when you are ready to start cooking."
             SESSION = 4
             COUNTER = 0
         elif (("grilled" in output_speech) or ("salmon" in output_speech)) and ("grilled salmon" in user_input):
-            output_speech = "Okay! Let's start cooking grilled salmon.Say \"ready\" when you are ready to start cooking."
+            output_speech = "Okay! Let's start cooking grilled salmon.Say \"start\" when you are ready to start cooking."
             SESSION = 5
             COUNTER = 0
         elif (("strawberry" in output_speech) or ("pie" in output_speech)) and ("strawberry pie" in user_input):
-            output_speech = "Okay! Let's start cooking strawberry pie.Say \"ready\" when you are ready to start cooking."
+            output_speech = "Okay! Let's start cooking strawberry pie.Say \"start\" when you are ready to start cooking."
             SESSION = 6
             COUNTER = 0
         else:
-            output_speech = "Sorry! We don't have "+user_input+" recipe available.Please say any recipe name from the menu"
+            output_speech = "Sorry! We don't have that recipe available.Please say any recipe name from the menu"
     #if ((intent_name == "SelectRecipe") and SESSION!=0):
         #intent_name = "Default Fallback Intent"
     if (intent_name == 'Default Fallback Intent') and (context == 1):
@@ -111,7 +113,7 @@ def basic(user_input):
         log.info("System:" + output_speech)
         return output_speech
     if (intent_name == "Default Fallback Intent") and (SESSION!=0) and (COUNTER==0):
-        output_speech = "Sorry I didn't understand what you were trying to say.Please say \"ready\" if you are ready to start" \
+        output_speech = "Sorry I didn't understand what you were trying to say.Please say \"start\" if you are ready to start" \
                         " cooking."
         log.info("System:" + output_speech)
         return output_speech

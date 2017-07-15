@@ -4,8 +4,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript">
-		var accessToken = "7853febc373644728bc5d5f9e6d0282d";
-		var subscriptionKey = "4ff074a867ab4d71a8f12eb5fd20822d";
+		var accessToken = "1e4bd06b41b745b9b49c47318de85bb2";
+		var subscriptionKey = "a6a9c6e0842f4d4e86631432ffb08b30";
 		var baseUrl = "https://api.api.ai/v1/";
 		$(document).ready(function() {
 			$("#input").keypress(function(event) {
@@ -64,16 +64,16 @@
 			var text = $("#input").val();
 			$.ajax({
 				type: "POST",
-				url: baseUrl + "query/",
+				url: baseUrl + "query/?v=20170715&amp;",
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				headers: {
 					"Authorization": "Bearer " + accessToken,
-					"ocp-apim-subscription-key": subscriptionKey
+					//"ocp-apim-subscription-key": subscriptionKey
 				},
-				data: JSON.stringify({ q: text, lang: "en" }),
+				data: JSON.stringify({ query: text, lang: "en", sessionId: "873fdf8a-aae9-41af-a453-8450622d578d",timezone:'2017-07-15T11:03:10-0500' }),
 				success: function(data) {
-					setResponse(JSON.stringify(data.result.speech, undefined, 2));
+					setResponse(JSON.stringify(data.result.fulfillment.speech, undefined, 2));
 					var msg = new SpeechSynthesisUtterance(JSON.stringify(data.result.speech, undefined, 2));
 					window.speechSynthesis.speak(msg);
 				},

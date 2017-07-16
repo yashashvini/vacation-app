@@ -3,6 +3,9 @@
         <button class="button button-full button-positive" ng-click="record()">
           {{text}}
         </button>
+        <div id = "output">
+        <h1 ng-repeat="x in vacation"><font color="white">{{x}}</font></h1>
+        </div>
         <script id = "my-modal.html" type = "text/ng-template">
            <ion-modal-view>
               <ion-header-bar>
